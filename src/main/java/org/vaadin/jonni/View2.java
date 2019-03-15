@@ -39,6 +39,9 @@ public class View2 extends VerticalLayout
 		parameterArea = new Div();
 		add(new H1("view2"), textField, parameterArea);
 
+		add(new Button("Cause an exception", click -> {
+			throw new RuntimeException("Mock error");
+		}));
 	}
 
 	private void setAskBeforeLeave(boolean askBeforeLeave) {
@@ -67,7 +70,8 @@ public class View2 extends VerticalLayout
 
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
-		// store the current location so that we can restore that in beforeLeave if needed
+		// store the current location so that we can restore that in beforeLeave if
+		// needed
 		originalLocation = event.getLocation().getPathWithQueryParameters();
 	}
 
@@ -77,10 +81,11 @@ public class View2 extends VerticalLayout
 		if (askBeforeLeave) {
 			// postpone the view change
 			ContinueNavigationAction postponedNavigationAction = event.postpone();
-			// and also replace the top most history state in the browser with this view's location
+			// and also replace the top most history state in the browser with this view's
+			// location
 			// https://github.com/vaadin/flow/issues/3619
 			UI.getCurrent().getPage().executeJavaScript("history.replaceState({},'','" + originalLocation + "');");
-			
+
 			// show the user a dialog where they can continue or cancel the exit action
 			Dialog dialog = new Dialog();
 			Button cancelButton = new Button("Cancel", VaadinIcon.CLOSE.create(), cancel -> {
@@ -88,10 +93,10 @@ public class View2 extends VerticalLayout
 			});
 			Button confirmButton = new Button("Confirm", VaadinIcon.CHECK.create(), confirm -> {
 				dialog.close();
-				
+
 				// change to the view where the user was trying to navigate to
 				postponedNavigationAction.proceed();
-				// and also update the address bar to reflect that location 
+				// and also update the address bar to reflect that location
 				String destination = event.getLocation().getPathWithQueryParameters();
 				UI.getCurrent().getPage().executeJavaScript("history.replaceState({},'','" + destination + "');");
 			});

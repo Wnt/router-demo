@@ -16,6 +16,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.DefaultErrorHandler;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -32,8 +33,10 @@ public class MainLayout extends VerticalLayout implements RouterLayout, BeforeEn
 				new Button("view 2", click -> {
 					UI.getCurrent().navigate(View2.class);
 				}), new Button("logout", click -> {
-					VaadinSession.getCurrent().setAttribute("user", null);
-					UI.getCurrent().navigate(LoginView.class);
+					VaadinSession.getCurrent().getSession().invalidate();
+					// redirect user to the root of the application
+					UI.getCurrent().getPage().executeJavaScript("window.location='';");
+					setDefaultErrorHandler();
 				}));
 		header.setWidthFull();
 		div = new Div();
@@ -42,6 +45,10 @@ public class MainLayout extends VerticalLayout implements RouterLayout, BeforeEn
 
 		setSizeFull();
 		expand(div);
+	}
+
+	private void setDefaultErrorHandler() {
+		UI.getCurrent().getSession().setErrorHandler(new DefaultErrorHandler());
 	}
 
 	@Override
@@ -103,6 +110,7 @@ public class MainLayout extends VerticalLayout implements RouterLayout, BeforeEn
 
 		if (event.getNavigationTarget() != View1.class && VaadinSession.getCurrent().getAttribute("user") == null) {
 			event.rerouteTo("login");
+			VaadinSession.getCurrent().setAttribute("redirectAfterLogin", event.getLocation().getPathWithQueryParameters());
 		}
 	}
 }
