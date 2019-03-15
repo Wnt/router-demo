@@ -40,8 +40,8 @@ public class View1 extends VerticalLayout {
 
 				.withProperty("data", item -> item.getProperty1())
 
-				.withEventHandler("handleClick", click -> {
-					Notification.show("DTO '" + click.getId() + "' was clicked!");
+				.withEventHandler("handleClick", clickedDto -> {
+					Notification.show("DTO '" + clickedDto.getId() + "' was clicked!");
 				})
 
 		).setHeader("Template renderer column");
