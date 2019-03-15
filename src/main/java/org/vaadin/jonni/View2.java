@@ -39,9 +39,6 @@ public class View2 extends VerticalLayout
 		parameterArea = new Div();
 		add(new H1("view2"), textField, parameterArea);
 
-		add(new Button("Cause an exception", click -> {
-			throw new RuntimeException("Mock error");
-		}));
 	}
 
 	private void setAskBeforeLeave(boolean askBeforeLeave) {
